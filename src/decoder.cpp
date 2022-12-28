@@ -22,7 +22,7 @@ using namespace emscripten;
 class Decoder {
   public:
     Decoder() {
-      isopened = im_open_decoder(DICT_PATH, USER_DICT_PATH);
+      is_working = im_open_decoder(DICT_PATH, USER_DICT_PATH);
       im_set_max_lens(SPS_MAX_LEN, CAND_BUFFER_MAX_LEN);
     };
     ~Decoder() {
@@ -30,7 +30,7 @@ class Decoder {
       im_close_decoder();
     };
 
-    bool isopened = false;
+    bool is_working = false;
 
     /**
      * Gets the candidates for the spelling string or chosen candidate.
@@ -63,12 +63,6 @@ class Decoder {
       return *candidates;
     };
 
-    /** Get prediction candidates. */
-    string predicts(string history) {
-      // im_get_predict();
-      return history;
-    }
-
     /** Clear the decoder. */
     bool clear() {
       im_flush_cache();
@@ -88,15 +82,15 @@ class Decoder {
     }
 
     /** Not support. */
-    size_t add_letter(char ch) {
-      // char ch = str[0];
-      // cout << "ch:" << ch << endl;
-      return im_add_letter(ch);
-    }
+    // size_t add_letter(char ch) {
+    //   // char ch = str[0];
+    //   // cout << "ch:" << ch << endl;
+    //   return im_add_letter(ch);
+    // }
 
     size_t decoded_len;
 
-    string get_sps_str() {
+    char[SPS_MAX_LEN] get_sps_str() {
       return im_get_sps_str(&decoded_len);
     }
 
@@ -119,6 +113,7 @@ class Decoder {
       for (short int i = 0; i < CAND_BUFFER_MAX_LEN; i++) {
         cout << *(spl_start + i) << endl;
       }
+      
       return spl_start_pos;
     }
 
@@ -138,10 +133,20 @@ class Decoder {
       return im_cancel_input();
     }
 
-    size_t get_predicts() {
-      char16 cand_buf[CAND_BUFFER_MAX_LEN];
+    string get_predicts(string cand_str) {
+      char16 cand_buf[CAND_BUFFER_MAX_LEN] = (char16_t *)cand_str;
       char16 (*pre_buf_ptr)[kMaxPredictSize + 1];
-      return im_get_predicts(cand_buf, pre_buf_ptr);
+      short int cand_num = im_get_predicts(cand_buf, pre_buf_ptr);
+      
+      string candidates[cand_num];
+      getCandidates(cand_num, candidates);
+      // cout << "len:" << len << endl;
+      for(short int i = 1; i < cand_num; i++) {
+        // cout << "i:" << i << "-" << candidates[i] << endl;
+        candidates[0].append("|" + candidates[i]);
+      }
+
+      return candidates[0];
     }
 
     private:
@@ -174,22 +179,19 @@ EMSCRIPTEN_BINDINGS(pinyin_decoder) {
     .constructor()
     .function("decode", &Decoder::decode)
     .function("clear", &Decoder::clear)
-
-    // .function("predicts", &Decoder::predicts)
-    // .function("search", &Decoder::search)
-    // .function("delSearch", &Decoder::del_search)
-    // .function("resetSearch", &Decoder::reset_search)
-    // .function("addLetter", &Decoder::add_letter)
-    // .function("getSpsStr", &Decoder::get_sps_str)
-    // .function("getCandidate", &Decoder::get_candidate)
-    // .function("getSplStartPos", &Decoder::get_spl_start_pos)
-    // .function("choose", &Decoder::choose)
-    // .function("cancelLastChoice", &Decoder::cancel_last_choice)
-    // .function("getFixedLen", &Decoder::get_fixed_len)
-    // .function("cancelInput", &Decoder::cancel_input)
-    // .function("getPredicts", &Decoder::get_predicts)
-    // .property("isopened", &Decoder::isopened)
-    // .property("decodedLen", &Decoder::decoded_len)
-    // .property("splStart", &Decoder::spl_start)
+    .function("search", &Decoder::search)
+    .function("delSearch", &Decoder::del_search)
+    .function("resetSearch", &Decoder::reset_search)
+    .function("getSpsStr", &Decoder::get_sps_str)
+    .function("getCandidate", &Decoder::get_candidate)
+    .function("getSplStartPos", &Decoder::get_spl_start_pos)
+    .function("choose", &Decoder::choose)
+    .function("cancelLastChoice", &Decoder::cancel_last_choice)
+    .function("getFixedLen", &Decoder::get_fixed_len)
+    .function("cancelInput", &Decoder::cancel_input)
+    .function("getPredicts", &Decoder::get_predicts)
+    .property("isWorking", &Decoder::is_working)
+    .property("decodedLen", &Decoder::decoded_len)
+    .property("splStart", &Decoder::spl_start)
     ;
 }
