@@ -11,7 +11,7 @@
     "build:webdecoder": "npm run build:decoder-deps -- -lidbfs.js --embed-file data/* -o out/decoder.js",
     "build:node-decoder": "npm run build:decoder-deps -- -sNODERAWFS -lnodefs.js --pre-js ./pre/dict.js -o out/debug.js",
     "build:noeval-decoder": "npm run build:webdecoder -- -sDYNAMIC_EXECUTION=0",
-    "debug:node": "npm run build:node-decoder && node --experime runtal-wasm-threads --experimental-wasm-bulk-memory ./out/debug.js"
+    "debug:node": "npm run build:node-decoder && cp -r data/* ./out && cd out && node --experimental-wasm-threads --experimental-wasm-bulk-memory ./debug.js"
   },
   "repository": {
     "type": "git",
