@@ -5,7 +5,7 @@
   "main": "out/index.js",
   "scripts": {
     "test": "mocha",
-    "make-lib": "emcmake cmake . -Bbuild && cmake --build build"
+    "make-lib": "emcmake cmake ./googlepinyin/ -Bbuild && cmake --build build"
   },
   "repository": {
     "type": "git",
