@@ -162,6 +162,10 @@ class Decoder {
       return im_cancel_input();
     }
 
+    void close() {
+      im_close_decoder();
+    }
+
     private:
       size_t getCandidates(size_t cand_num, string *cands_list)
       {
@@ -203,6 +207,7 @@ EMSCRIPTEN_BINDINGS(pinyin_decoder) {
     .function("getFixedLen", &Decoder::get_fixed_len)
     .function("cancelInput", &Decoder::cancel_input)
     .function("getPredicts", &Decoder::get_predicts)
+    .function("close", &Decoder::close)
     .property("isWorking", &Decoder::is_working)
     .property("decodedLen", &Decoder::decoded_len)
     ;

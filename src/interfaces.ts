@@ -19,7 +19,9 @@ export interface IDecoder {
   cancelLastChoice(): number;
   getFixedLen(): number;
   cancelInput(): boolean;
+  /** 当前不能与`search`一起使用,会出现内存溢出现象. */ 
   getPredicts(history: string): ReturnedCandidateList;
+  close(): void;
   isOpened: boolean;
   decodedLen: number;
   delete(): void;
