@@ -23,8 +23,7 @@
     "sourceMap": true
   },
   "include": [
-    "src",
-    "test",
-    "types"
-  ]
+    "src", 
+    "types"  
+]
 }

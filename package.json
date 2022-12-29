@@ -7,11 +7,13 @@
     "test": "mocha",
     "build": "npm run build:lib && npm run build:decoder",
     "build:lib": "emcmake cmake ./googlepinyin/ -Bbuild && cmake --build build",
-    "build:decoder-deps": "emcc -pthread -sINITIAL_MEMORY=64MB -L./build -lGooglePinyin -lembind -I./googlepinyin/ src/decoder.cpp",
-    "build:webdecoder": "npm run build:decoder-deps -- -lidbfs.js --embed-file data/* -o out/decoder.js",
-    "build:node-decoder": "npm run build:decoder-deps -- -sNODERAWFS -lnodefs.js --pre-js ./out/apitest.js -o out/debug.js",
-    "build:noeval-decoder": "npm run build:webdecoder -- -sDYNAMIC_EXECUTION=0",
-    "debug:node": "npm run build:node-decoder && cp -r data/* ./out && cd out && node --experimental-wasm-threads --experimental-wasm-bulk-memory ./debug.js"
+    "build:ts": "tsc",
+    "build:decoder-deps": "emcc -pthread -sINITIAL_MEMORY=32MB -L./build -lGooglePinyin -lembind -I./googlepinyin/ src/decoder.cpp",
+    "build:webdecoder": "tsc && npm run build:decoder-deps -- -lidbfs.js --embed-file data/* -o out/decoder.js",
+    "build:nodedecoder": "tsc && npm run build:decoder-deps -- -sNODERAWFS -lnodefs.js --pre-js ./out/apitest.js -o out/debug.js",
+    "build:noevaldecoder": "npm run build:webdecoder -- -sDYNAMIC_EXECUTION=0",
+    "debug:node": "npm run build:nodedecoder && cp -r data/* ./out && npm run node:run-debug",
+    "node:run-debug": "cd out && node --experimental-wasm-threads --experimental-wasm-bulk-memory ./debug.js"
   },
   "repository": {
     "type": "git",

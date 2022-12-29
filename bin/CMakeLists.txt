@@ -6,40 +6,40 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(PUBLIC_HEADERS 
-    ../dictbuilder.h
-    ../dictdef.h
-    ../dictlist.h
-    ../dicttrie.h
-    ../lpicache.h
-    ../matrixsearch.h
-    ../mystdlib.h
-    ../ngram.h
-    ../searchutility.h
-    ../spellingtable.h
-    ../spellingtrie.h
-    ../splparser.h
-    ../sync.h
-    ../userdict.h
-    ../utf16char.h
-    ../utf16reader.h
+    ../googlepinyin/dictbuilder.h
+    ../googlepinyin/dictdef.h
+    ../googlepinyin/dictlist.h
+    ../googlepinyin/dicttrie.h
+    ../googlepinyin/lpicache.h
+    ../googlepinyin/matrixsearch.h
+    ../googlepinyin/mystdlib.h
+    ../googlepinyin/ngram.h
+    ../googlepinyin/searchutility.h
+    ../googlepinyin/spellingtable.h
+    ../googlepinyin/spellingtrie.h
+    ../googlepinyin/splparser.h
+    ../googlepinyin/sync.h
+    ../googlepinyin/userdict.h
+    ../googlepinyin/utf16char.h
+    ../googlepinyin/utf16reader.h
 )
 
 set(PINYIN_SOURCES
-    ../dictbuilder.cpp
-    ../dictlist.cpp
-    ../dicttrie.cpp
-    ../lpicache.cpp
-    ../matrixsearch.cpp
-    ../mystdlib.cpp
-    ../ngram.cpp
-    ../searchutility.cpp
-    ../spellingtable.cpp
-    ../spellingtrie.cpp
-    ../splparser.cpp
-    ../sync.cpp
-    ../userdict.cpp
-    ../utf16char.cpp
-    ../utf16reader.cpp
+    ../googlepinyin/dictbuilder.cpp
+    ../googlepinyin/dictlist.cpp
+    ../googlepinyin/dicttrie.cpp
+    ../googlepinyin/lpicache.cpp
+    ../googlepinyin/matrixsearch.cpp
+    ../googlepinyin/mystdlib.cpp
+    ../googlepinyin/ngram.cpp
+    ../googlepinyin/searchutility.cpp
+    ../googlepinyin/spellingtable.cpp
+    ../googlepinyin/spellingtrie.cpp
+    ../googlepinyin/splparser.cpp
+    ../googlepinyin/sync.cpp
+    ../googlepinyin/userdict.cpp
+    ../googlepinyin/utf16char.cpp
+    ../googlepinyin/utf16reader.cpp
 )
 
 set(EXECUTABLE_NAME builder)

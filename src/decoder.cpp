@@ -5,6 +5,7 @@
 #include <codecvt>
 #include <iostream>
 #include <emscripten/bind.h>
+#include <emscripten.h>
 
 #include <pinyinime.h>
 
@@ -13,11 +14,16 @@ using namespace std;
 using namespace ime_pinyin;
 using namespace emscripten;
 
+
 #define DICT_PATH "./dict/dict_pinyin.dat"
 #define USER_DICT_PATH "./user/dict_pinyin.dat"
 #define CAND_BUFFER_MAX_LEN 40 // Maximum for the sentence char length
 #define SPS_MAX_LEN 120 // Maximum for spelling string.
 #define CANDS_MAX_NUM 50 // Maximum for the candidates.
+
+
+static const size_t kMaxPredictNum = 20;
+static char16 (*pre_buf)[kMaxPredictSize + 1] = NULL;
 
 class Decoder {
   public:
@@ -90,12 +96,13 @@ class Decoder {
 
     size_t decoded_len;
 
-    char[SPS_MAX_LEN] get_sps_str() {
-      return im_get_sps_str(&decoded_len);
+    string get_sps_str() {
+      string spsStr = im_get_sps_str(&decoded_len);
+      return spsStr;
     }
 
     string get_candidate(size_t cand_id) {
-      char16 cand_str[CANDS_MAX_NUM];
+      char16 cand_str[CAND_BUFFER_MAX_LEN];
       
       im_get_candidate(cand_id, cand_str, CAND_BUFFER_MAX_LEN);
       
@@ -103,18 +110,40 @@ class Decoder {
       return conv.to_bytes((char16_t *)cand_str);
     }
 
-    uint16_t spl_start[CAND_BUFFER_MAX_LEN];
+    string get_predicts(u16string history) {
+      const char16_t* history_cstr = history.c_str();
+      short int cand_num = im_get_predicts((const char16*)history_cstr, pre_buf);
+      delete[] history_cstr;
+      // delete[] pre_buf;
+      // return cand_num;
+      
+      if (cand_num > kMaxPredictNum) {
+        cand_num = kMaxPredictNum;
+      }
+
+      string candidates;
+      int currentNum = 0;
+      for(short int i = 0; i <= cand_num; i++) {
+        char16* cand_str = pre_buf[i];
+        
+        wstring_convert<codecvt_utf8_utf16<char16_t>, char16_t> conv;
+        string u8str = conv.to_bytes((char16_t *)cand_str);
+        candidates.append(u8str + "|");
+        delete[] cand_str;
+      }
+
+      return candidates;
+    }
 
     size_t get_spl_start_pos() {
-      const uint16_t *spl_start_ptr = spl_start;
-      size_t spl_start_pos = im_get_spl_start_pos(spl_start_ptr);
-      
-      string sp;
-      for (short int i = 0; i < CAND_BUFFER_MAX_LEN; i++) {
-        cout << *(spl_start + i) << endl;
+      EM_ASM({globalThis.splStart = []});
+      const unsigned short *spl_start;
+      size_t len = im_get_spl_start_pos(spl_start);
+      for (size_t i = 0; i <= len; i++) {
+        EM_ASM({ globalThis.splStart.push($0); }, spl_start[i]);
       }
       
-      return spl_start_pos;
+      return len;
     }
 
     size_t choose(size_t cand_id) {
@@ -131,22 +160,6 @@ class Decoder {
 
     bool cancel_input() {
       return im_cancel_input();
-    }
-
-    string get_predicts(string cand_str) {
-      char16 cand_buf[CAND_BUFFER_MAX_LEN] = (char16_t *)cand_str.c_str();
-      char16 (*pre_buf_ptr)[kMaxPredictSize + 1];
-      short int cand_num = im_get_predicts(cand_buf, pre_buf_ptr);
-      
-      string candidates[cand_num];
-      getCandidates(cand_num, candidates);
-      // cout << "len:" << len << endl;
-      for(short int i = 1; i < cand_num; i++) {
-        // cout << "i:" << i << "-" << candidates[i] << endl;
-        candidates[0].append("|" + candidates[i]);
-      }
-
-      return candidates[0];
     }
 
     private:
@@ -192,6 +205,5 @@ EMSCRIPTEN_BINDINGS(pinyin_decoder) {
     .function("getPredicts", &Decoder::get_predicts)
     .property("isWorking", &Decoder::is_working)
     .property("decodedLen", &Decoder::decoded_len)
-    .property("splStart", &Decoder::spl_start)
     ;
 }

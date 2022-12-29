@@ -27,7 +27,7 @@ extern "C" {
   using namespace ime_pinyin;
 
   // The maximum number of the prediction items.
-  static const size_t kMaxPredictNum = 500;
+  static const size_t kMaxPredictNum = 50;
 
   // Used to search Pinyin string and give the best candidate.
   MatrixSearch* matrix_search = NULL;
