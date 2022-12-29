@@ -32,7 +32,6 @@ interface IDecoderController {
 
 interface GooglePinyinDecoder extends EmscriptenModule {
   Decoder: IDecoderController;
-  handleUnmountIDBFS: () => Promise<boolean>
 }
 
 declare module globalThis {
