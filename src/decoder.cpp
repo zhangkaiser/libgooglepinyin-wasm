@@ -134,7 +134,7 @@ class Decoder {
     }
 
     string get_predicts(string cand_str) {
-      char16 cand_buf[CAND_BUFFER_MAX_LEN] = (char16_t *)cand_str;
+      char16 cand_buf[CAND_BUFFER_MAX_LEN] = (char16_t *)cand_str.c_str();
       char16 (*pre_buf_ptr)[kMaxPredictSize + 1];
       short int cand_num = im_get_predicts(cand_buf, pre_buf_ptr);
       
