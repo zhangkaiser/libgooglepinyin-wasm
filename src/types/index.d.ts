@@ -1,32 +1,41 @@
 
+
 type ReturnedCandidateList = string;
 
 interface IDecoder {
-  /** @return "你好|你|拟|尼..." */
+  /**
+   * decode("pinyin", -1 | cand_id) 
+   * @return "你好|你|拟|尼..."
+   */
   decode(sps_buf: string, cand_id: number): ReturnedCandidateList;
   clear(): boolean;
   /** @return "你好|你|拟|尼..." */
   search(spsBuf: string): number;
-  delSearch(pos: number, isPosInSplid: boolean, clearFixedThisStep: boolean);
+  delSearch(pos: number, isPosInSplid: boolean, clearFixedThisStep: boolean): number;
   resetSearch(): void;
   choose(cand_id): number;
   getSpsStr(): string;
   getCandidate(cand_id: number): string;
-  getSplStartPos(): ReturnedCandidateList;
+  getSplStartPos(): number;
   cancelLastChoice(): number;
   getFixedLen(): number;
   cancelInput(): boolean;
-  getPredicts(history: string): string;
+  getPredicts(history: string): ReturnedCandidateList;
   isOpened: boolean;
   decodedLen: number;
-  splStart: string;
 }
+
 
 interface IDecoderController {
   new (): IDecoder;
   prototype: IDecoder;
 }
 
-interface GooglePinyinWasm extends EmscriptenModule {
+interface GooglePinyinDecoder extends EmscriptenModule {
   Decoder: IDecoderController;
+}
+
+declare module globalThis {
+  var Module: GooglePinyinDecoder;
+  var splStart: number[];
 }
