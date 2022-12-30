@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { IDecoder } from "./interfaces";
 
 const pageSize = 5;
 
@@ -17,7 +18,7 @@ function getCandidates(decoder: IDecoder, len: number) {
 Module['onRuntimeInitialized'] = function() {
 
   function getPredictsAndChooseBugTest(sps: string) {
-    let decoder = new Module['Decoder'];
+    let decoder = new (Module as any)['Decoder'] as IDecoder;
     console.log(sps, decoder.decode(sps, -1));
 
     let predicts = decoder.getPredicts(decoder.getCandidate(0));

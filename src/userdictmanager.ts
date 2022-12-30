@@ -1,4 +1,5 @@
 import { downloadFileUseChromeTabsAPI } from "./api/emscripten/files";
+import { IDecoder } from "./interfaces";
 
 export function addUserDict(decoder: IDecoder,pinyin: string, candidate: string) {
   // 不支持非汉字

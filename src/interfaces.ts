@@ -1,8 +1,7 @@
 
-
 type ReturnedCandidateList = string;
 
-interface IDecoder {
+export interface IDecoder {
   /**
    * decode("pinyin", -1 | cand_id) 
    * @return "你好|你|拟|尼..."
@@ -13,7 +12,7 @@ interface IDecoder {
   search(spsBuf: string): number;
   delSearch(pos: number, isPosInSplid: boolean, clearFixedThisStep: boolean): number;
   resetSearch(): void;
-  choose(cand_id): number;
+  choose(cand_id: number): number;
   getSpsStr(): string;
   getCandidate(cand_id: number): string;
   getSplStartPos(): number;
@@ -23,19 +22,14 @@ interface IDecoder {
   getPredicts(history: string): ReturnedCandidateList;
   isOpened: boolean;
   decodedLen: number;
+  delete(): void;
 }
 
-
-interface IDecoderController {
+export interface IDecoderController {
   new (): IDecoder;
   prototype: IDecoder;
 }
 
-interface GooglePinyinDecoder extends EmscriptenModule {
+export interface GooglePinyinDecoder extends EmscriptenModule {
   Decoder: IDecoderController;
-}
-
-declare module globalThis {
-  var Module: GooglePinyinDecoder;
-  var splStart: number[];
 }

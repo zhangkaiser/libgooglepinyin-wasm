@@ -1,5 +1,6 @@
-/// <reference path="./types/index.d.ts" />
+/// <reference path="../types/index.d.ts" />
 import {mountIDBFS, writeinIDBFS} from "./idbfspre";
+import { GooglePinyinDecoder } from "./interfaces";
 export { addUserDict, addUserDicts, downloadUserDict, uploadUserDict } from "./userdictmanager";
 
 
