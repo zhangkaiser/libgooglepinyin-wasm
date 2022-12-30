@@ -4,6 +4,7 @@ import { GooglePinyinDecoder } from "./interfaces";
 export { addUserDict, addUserDicts, downloadUserDict, uploadUserDict } from "./userdictmanager";
 
 
+if (!Module.preRun) Module.preRun = [];
 Module.preRun.unshift(mountIDBFS);
 
 function inited() {
