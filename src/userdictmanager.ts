@@ -3,7 +3,7 @@ import { IDecoder } from "./interfaces";
 
 export function addUserDict(decoder: IDecoder,pinyin: string, candidate: string) {
   // 不支持非汉字
-  if (!/[a-zA-Z]/.test(candidate)) return;
+  if (/[a-zA-Z]/.test(candidate)) return;
   let selectedCandID = -1;
   let maxLoop = 9;
   let sliceStartPos = 0;
@@ -13,7 +13,7 @@ export function addUserDict(decoder: IDecoder,pinyin: string, candidate: string)
     let currentCandidate = candidate.slice(sliceStartPos);
 
     let candidateList = candidates.split("|");
-    if (candidateList.length <= 5 || (i == 0 && candidates.startsWith(candidate))) return;
+    if (candidateList.length === 1 || (i == 0 && candidates.startsWith(candidate))) return;
 
     if (candidates.startsWith(candidate)) {
       selectedCandID = 0;
